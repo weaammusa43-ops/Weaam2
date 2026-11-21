@@ -1,0 +1,169 @@
+<?php
+require __DIR__ . '/includes/bootstrap.php';
+$user = require_login();
+?>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - المواد والمقررات الدراسية | Subjects</title>
+    <!-- ربط ملف الـ CSS الشامل داخل مجلد css -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .subjects-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .subjects-table th, .subjects-table td {
+            padding: 0;
+            border-bottom: 1px solid #e8e3d5;
+        }
+        .subjects-table th {
+            padding: 14px 16px;
+            background-color: #1e382d;
+            color: white;
+            font-size: 15px;
+            text-align: right;
+        }
+        .subject-link {
+            color: #1e382d;
+            font-weight: 600;
+            text-decoration: none;
+            display: block;
+            padding: 14px 16px;
+            font-size: 14.5px;
+            transition: all 0.3s ease;
+        }
+        .subject-link:hover {
+            background-color: #f0fdf4;
+            color: #059669;
+            padding-right: 22px;
+            border-right: 4px solid #10b981;
+        }
+        .spec-title {
+            background: #f4f0e6;
+            font-weight: bold;
+            color: #1e382d;
+            text-align: center !important;
+            font-size: 14px;
+            padding: 15px !important;
+        }
+
+        /* شريط التنقل العلوي المتمركز في المنتصف للأزرار التفاعلية */
+        .portal-nav-bar {
+            background-color: #2c4a3e;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .portal-nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .portal-nav-bar a:hover {
+            background-color: #b8860b;
+            border-color: #b8860b;
+            transform: translateY(-2px);
+        }
+        .logout-nav-btn {
+            background: rgba(239, 68, 68, 0.3) !important;
+            border-color: rgba(239, 68, 68, 0.6) !important;
+        }
+        .logout-nav-btn:hover {
+            background: #ef4444 !important;
+            border-color: #ef4444 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Student Portal | بوابة المقررات والمواد الدراسية</h1>
+        <p>جامعة الجزيرة - كلية العلوم الرياضية والحاسوب (دليل المواد الدراسية - الدفعة 43)</p>
+    </header>
+
+    <!-- شريط الأزرار العلوي التفاعلي (الرئيسية وتسجيل الخروج في المنتصف) -->
+    <div class="portal-nav-bar">
+        <a href="home.php">🏠 الرئيسية | Home</a>
+        <a href="logout.php?t=<?= e(csrf_token()) ?>" class="logout-nav-btn" data-logout>🚪 تسجيل الخروج | Logout</a>
+    </div>
+
+    <main>
+        <?= flash_html() ?>
+        <section id="subjects">
+            <h2>📖 المقررات والمواد الدراسية الحصرية (الفصل الدراسي الثامن)</h2>
+            <p>اضغطي على أي مادة للانتقال المباشر لجدولها وتظليلها في صفحة المحاضرات:</p>
+
+            <table class="subjects-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">التخصص الأكاديمي</th>
+                        <th>اسم المقرر / المادة الدراسية</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- المقررات المشتركة (3 مواد) -->
+                    <tr>
+                        <td rowspan="3" class="spec-title" style="color: #0369a1;">🔗 مقررات مشتركة<br>(جميع التخصصات)</td>
+                        <td><a href="lectures.php#web-sec" class="subject-link">🌐 برمجة تطبيقات الإنترنت (43) — أ. محمد عبد الرحمن</a></td>
+                    </tr>
+                    <tr><td><a href="lectures.php#multimedia-sec" class="subject-link">🎬 تقانة الوسائط المتعددة (43) — د. هديل</a></td></tr>
+                    <tr><td><a href="lectures.php#projects-sec" class="subject-link">📊 إدارة مشروعات البرمجيات (43) — د. رقية</a></td></tr>
+
+                    <!-- علوم الحاسوب (3 مواد) -->
+                    <tr>
+                        <td rowspan="3" class="spec-title">💻 علوم الحاسوب<br>(Computer Science)</td>
+                        <td><a href="lectures.php#theory-sec" class="subject-link">⚙️ نظرية الحوسبة (43) — أ. حسين</a></td>
+                    </tr>
+                    <tr><td><a href="lectures.php#networks-sec" class="subject-link">🔒 إدارة وأمن شبكات الحاسوب (43) — د. سلمى</a></td></tr>
+                    <tr><td><a href="lectures.php#algorithms-sec" class="subject-link">🧮 تصميم وتحليل الخوارزميات (43) — أ. هدى</a></td></tr>
+
+                    <!-- الإحصاء (3 مواد) -->
+                    <tr>
+                        <td rowspan="3" class="spec-title">📊 الإحصاء<br>(Statistics)</td>
+                        <td><a href="lectures.php#stats1-sec" class="subject-link">📈 النماذج الخطية العامة (43) — أ. سماح</a></td>
+                    </tr>
+                    <tr><td><a href="lectures.php#stats2-sec" class="subject-link">📉 إحصاءات بيز (43) — د. سحر</a></td></tr>
+                    <tr><td><a href="lectures.php#stats3-sec" class="subject-link">📋 تحليل البيانات التصنيفية (43) — أ. سمية</a></td></tr>
+
+                    <!-- الرياضيات (4 مواد) -->
+                    <tr>
+                        <td rowspan="4" class="spec-title">📐 الرياضيات<br>(Mathematics)</td>
+                        <td><a href="lectures.php#math1-sec" class="subject-link">📐 تحليل المتغيرات المتعددة (43) — د. إسراء</a></td>
+                    </tr>
+                    <tr><td><a href="lectures.php#math2-sec" class="subject-link">📐 المعادلات التفاضلية الجزئية (43) — د. وحيد</a></td></tr>
+                    <tr><td><a href="lectures.php#math3-sec" class="subject-link">📐 التحليل الدالي (43) — د. جمال الخير الأبوي</a></td></tr>
+                    <tr><td><a href="lectures.php#math4-sec" class="subject-link">📐 الأمثلية (43) — د. نفيسة</a></td></tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>Student Portal & بوابة الطالب - كلية العلوم الرياضية والحاسوب © 2026</p>
+    </footer>
+
+    <!-- ربط ملف الجافاسكريبت الخارجي -->
+    <script src="js/script.js"></script>
+</body>
+</html>

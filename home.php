@@ -1,0 +1,88 @@
+<?php
+require __DIR__ . '/includes/bootstrap.php';
+$user = require_login();
+?>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - الرئيسية | Home</title>
+    
+    <!-- ربط ملف التنسيقات الخارجي بالطريقة الصحيحة -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+    <header>
+        <h1>Student Portal | بوابة الطالب</h1>
+        <p>جميع معلوماتك الأكاديمية في مكان واحد | Your Academic Information in One Place</p>
+    </header>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main>
+        <?= flash_html() ?>
+        <!-- الشعار البارز مباشرة تحت عنوان البوابة -->
+        <div class="welcome-card" style="text-align: center; padding: 20px;">
+            <div class="hero-logo-container">
+                <img src="image/image.jpg" alt="شعار كلية العلوم الرياضية والحاسوب" class="college-logo-large">
+            </div>
+        </div>
+
+        <!-- الكلام الترحيبي والبطاقة قبل المحطة -->
+        <div class="welcome-card">
+            <h3>📜مرحباً بك في بوابة الطالب الأكاديمية📜 </h3>
+            <p style="color:#b8860b; font-weight:bold;">👋 أهلاً <?= e($user['full_name']) ?></p>
+                        
+                       
+            
+            <p>يسعدنا انضمامك لموقع كلية العلوم الرياضية والحاسوب. هنا يمكنك متابعة جدول المحاضرات، الاطلاع على المواد الدراسية، ومعرفة مواعيد الامتحانات والإعلانات الهامة أولاً بأول.</p>
+            <p style="color: #555; font-size: 13px; font-weight: bold;">نتمنى لك فصلاً دراسياً موفقاً مليئاً بالتفوق والنجاح.</p>
+        </div>
+
+        <!-- محطة الإلهام والوصول السريع الشاملة لجميع الأزرار بدون تكرار -->
+        <div class="creative-hub">
+            <h3>🌟 محطة الإبداع والوصول السريع</h3>
+            <p style="font-size: 14px; opacity: 0.9; line-height: 1.6;">
+                "الإبداع هو أن ترى ما يراه الجميع، ولكن تفكر فيما لا يفكّر فيه أحد." <br>
+                صُممت هذه البوابة خصيصاً لتكون رفيقك الأكاديمي الأمثل طوال مسيرتك في الدفعة 43. اختر وجهتك التالية بكل سهولة:
+            </p>
+            
+            <div class="quick-links-grid">
+                <!-- تم تعديل الرابط هنا ليوجه لـ home.php بدلاً من index.php -->
+                <a href="home.php" class="quick-link-btn">🏠 الرئيسية | Home</a>
+                <a href="lectures.php" class="quick-link-btn">📚 المحاضرات</a>
+                <a href="schedules.php" class="quick-link-btn">📅 الجداول</a>
+                <a href="exams.php" class="quick-link-btn">📝 الامتحانات</a>
+                <a href="subjects.php" class="quick-link-btn">📖 المواد الدراسية</a>
+                
+                <!-- زر تواصل معنا يوجه لصفحة الحساب وينزل مباشرة لقسم التواصل -->
+                <a href="account.php#contact-section" class="quick-link-btn">📞 تواصل معنا</a>
+                
+                <!-- زر الحساب والمساعدة يوجه لقسم المساعد الذكي -->
+                <a href="account.php#help-section" class="quick-link-btn" style="background: rgba(184, 134, 11, 0.2); border-color: #b8860b;">⚙️ الحساب والمساعدة</a>
+                
+                <?php if (is_admin()): ?>
+                <a href="admin_messages.php" class="quick-link-btn" style="background: rgba(3, 105, 161, 0.25); border-color: #0369a1;">📨 رسائل المستخدمين</a>
+                <?php endif; ?>
+
+                <!-- زر تسجيل الخروج هو البيرجع لـ index.php -->
+                <a href="logout.php?t=<?= e(csrf_token()) ?>" class="quick-link-btn logout-quick-btn" data-logout>🚪 تسجيل الخروج</a>
+            </div>
+        </div>
+        
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <p>Student Portal & بوابة الطالب - كلية العلوم الرياضية والحاسوب © 2026</p>
+    </footer>
+
+    <!-- ربط ملف الجافاسكريبت داخل مجلد js -->
+    <script src="js/script.js"></script>
+</body>
+
+</html>

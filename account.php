@@ -1,0 +1,369 @@
+<?php
+require __DIR__ . '/includes/bootstrap.php';
+$user = require_login();
+?>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - إعدادات الحساب والمساعدة | Account & Help</title>
+    <!-- ربط ملف الـ CSS الخارجي الموحد -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* إضافة خاصية الانتقال السلس عند الضغط على الروابط الداخلية */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .account-container {
+            max-width: 650px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-right: 6px solid #1e382d;
+        }
+
+        .account-header {
+            text-align: center;
+            border-bottom: 2px solid #e8e3d5;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .account-header h2 {
+            color: #1e382d;
+            margin: 0 0 8px 0;
+            font-size: 22px;
+        }
+
+        .account-header p {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .menu-section {
+            margin-bottom: 25px;
+            scroll-margin-top: 25px; /* لضمان عدم اختفاء العنوان تحت الهيدر عند التمرير */
+        }
+
+        .menu-section h3 {
+            color: #b8860b;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-box {
+            background: #fdfbf7;
+            border: 1px solid #e8e3d5;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        /* تنسيق الأرقام والروابط التفاعلية */
+        .interactive-link {
+            color: #0066cc;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+        .whatsapp-interactive {
+            color: #25d366;
+            text-decoration: underline;
+            font-weight: bold;
+            direction: ltr;
+            unicode-bidi: embed;
+            display: inline-block;
+        }
+
+        /* تنسيق نموذج تواصل معنا (Contact Form) */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            font-size: 13.5px;
+            color: #1e382d;
+        }
+
+        .form-group input, 
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .form-group input:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #b8860b;
+            box-shadow: 0 0 5px rgba(184, 134, 11, 0.3);
+        }
+
+        .btn-submit-contact {
+            background: #1e382d;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .btn-submit-contact:hover {
+            background: #b8860b;
+        }
+
+        .contact-status {
+            margin-top: 10px;
+            padding: 10px;
+            background: #dcfce7;
+            border-right: 4px solid #16a34a;
+            color: #15803d;
+            border-radius: 6px;
+            font-size: 13.5px;
+            display: none;
+        }
+
+        /* تنسيق مربع البحث التفاعلي للمشكلات */
+        .help-search-box {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .help-search-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .help-search-box button {
+            background: #0369a1;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .help-search-box button:hover { background: #0284c7; }
+        
+        .solution-result {
+            margin-top: 12px;
+            padding: 12px;
+            background: #e0f2fe;
+            border-right: 4px solid #0284c7;
+            border-radius: 6px;
+            font-size: 13.5px;
+            color: #0369a1;
+            display: none;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-logout {
+            background: #ef4444;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            display: block;
+            transition: background 0.3s;
+        }
+        .btn-logout:hover { background: #dc2626; }
+
+        /* شريط التنقل العلوي المتمركز في المنتصف لزر الرئيسية فقط */
+        .portal-nav-bar {
+            background-color: #2c4a3e;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .portal-nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 22px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .portal-nav-bar a:hover {
+            background-color: #b8860b;
+            border-color: #b8860b;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Student Portal | مركز الحساب والإرشادات</h1>
+        <p>جامعة الجزيرة - كلية العلوم الرياضية والحاسوب (الدفعة 43)</p>
+    </header>
+
+    <!-- شريط الأزرار العلوي (يحتوي على زر الرئيسية فقط متمركز في المنتصف) -->
+    <div class="portal-nav-bar">
+        <a href="home.php">🏠 الرئيسية | Home</a>
+        <?php if (is_admin()): ?>
+        <a href="admin_messages.php">📨 رسائل المستخدمين</a>
+        <?php endif; ?>
+    </div>
+
+    <main>
+        <?= flash_html() ?>
+        <div class="account-container">
+            
+            <div class="account-header">
+                <h2>⚙️ مركز الدعم الفني والإرشادات الأكاديمية</h2>
+                <p>كل ما يحتاجه طالب الدفعة 43 من إرشادات، تواصل، وحل المشكلات الفورية</p>
+            </div>
+
+            <!-- 1. صفحة الإرشادات ودليل الاستخدام -->
+            <div class="menu-section" id="guide-section">
+                <h3>📖 إرشادات استخدام البوابة الأكاديمية</h3>
+                <div class="menu-box">
+                    • <strong>استعراض المواد:</strong> انتقل لصفحة المواد الدراسية لمعرفة مواد الفصل الثامن الـ 11 بالكامل.<br>
+                    • <strong>إدارة المحاضرات:</strong> في صفحة المحاضرات يمكنك تصفح الملفات ورفع ملفات PDF الجديدة للمقررات.<br>
+                    • <strong>الأرشيف:</strong> استخدم قسم الامتحانات للاطلاع على أسئلة السنوات السابقة.
+                </div>
+            </div>
+
+            <!-- 2. قسم تواصل معنا المطور -->
+            <div class="menu-section" id="contact-section">
+                <h3>📞 تواصل معنا</h3>
+                <div class="menu-box">
+                    <strong>معلومات التواصل المباشر:</strong><br>
+                    📧 البريد الإلكتروني: <a href="mailto:weaammusa43@gmail.com" class="interactive-link">weaammusa43@gmail.com</a><br>
+                    📱 الواتساب: <a href="https://wa.me/249914946849" target="_blank" class="whatsapp-interactive">+249 914 946 849</a><br>
+                    🏛️ المكان: مجمع العلوم الرياضية والحاسوب - جامعة الجزيرة
+                    
+                    <hr style="border: 0; border-top: 1px dashed #e8e3d5; margin: 15px 0;">
+
+                    <strong>أو أرسل لنا رسالة مباشرة:</strong>
+                    
+                    <!-- نموذج التواصل المطلوبة فيه الخانات -->
+                    <form class="contact-form" method="post" action="contact.php">
+                        <?= csrf_field() ?>
+                        <div class="form-group">
+                            <label for="studentName">الاسم الكامل:</label>
+                            <input type="text" id="studentName" name="studentName" maxlength="100" value="<?= e($user['full_name']) ?>" placeholder="أدخل اسمك هنا..." required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="studentEmail">البريد الإلكتروني:</label>
+                            <input type="email" id="studentEmail" name="studentEmail" maxlength="190" value="<?= e($user['email']) ?>" placeholder="example@domain.com" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="studentMessage">سبب التواصل / التعليق:</label>
+                            <textarea id="studentMessage" name="studentMessage" rows="4" minlength="5" maxlength="3000" placeholder="اكتب استفسارك أو تعليقك هنا..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-submit-contact">✉️ إرسال الرسالة</button>
+                    </form>
+
+                    <?php $sentName = $_SESSION['contact_name'] ?? null; unset($_SESSION['contact_name']); ?>
+                    <div id="contactStatus" class="contact-status"<?= $sentName ? ' style="display:block"' : '' ?>><?php if ($sentName): ?>✅ شكراً لك يا <strong><?= e($sentName) ?></strong>! تم إرسال رسالتك بنجاح وسنقوم بالرد عليك في أقرب وقت.<?php endif; ?></div>
+                </div>
+            </div>
+
+            <!-- 3. زر المساعدة التفاعلي -->
+            <div class="menu-section" id="help-section">
+                <h3>❓ المساعد الذكي لحل المشكلات الفورية</h3>
+                <div class="menu-box">
+                    <p style="margin: 0 0 8px 0; font-size: 13.5px; color: #555;">اكتب كلمتين عن مشكلتك (مثلاً: "رفع ملف", "الصورة لا تظهر", "تسجيل الخروج"):</p>
+                    <div class="help-search-box">
+                        <input type="text" id="problemInput" placeholder="اكتب مشكلتك هنا...">
+                        <button onclick="findSolution()">ابحث عن الحل</button>
+                    </div>
+                    <div id="solutionBox" class="solution-result"></div>
+                </div>
+            </div>
+
+            <!-- زر تسجيل الخروج النهائي (تم تعديله بحل جذرى للمسارات لضمان عدم ظهور 404) -->
+            <div class="actions-grid">
+                <a href="logout.php?t=<?= e(csrf_token()) ?>" class="btn-logout" data-logout>🚪 تسجيل الخروج النهائي من الحساب</a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>Student Portal & بوابة الطالب - كلية العلوم الرياضية والحاسوب © 2026</p>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        // دالة تفاعلية ذكية للبحث عن حل المشكلة
+        function findSolution() {
+            const input = document.getElementById('problemInput').value.trim().toLowerCase();
+            const solutionBox = document.getElementById('solutionBox');
+            
+            if (input === "") {
+                solutionBox.style.display = "block";
+                solutionBox.innerHTML = "⚠️ الرجاء كتابة وصف قصير للمشكلة أولاً.";
+                return;
+            }
+
+            let solutionText = "";
+
+            if (input.includes("رفع") || input.includes("ملف") || input.includes("pdf")) {
+                solutionText = "💡 <strong>الحل:</strong> يمكنك رفع ملفات PDF مباشرة عبر صفحة المحاضرات أو الامتحانات من خلال خانة 'رفع محاضرة جديدة' واختيار الملف ثم الضغط على زر الرفع.";
+            } else if (input.includes("صورة") || input.includes("شعار")) {
+                solutionText = "💡 <strong>الحل:</strong> تأكد أن الصورة مرفوعة داخل مجلد `image` باسم `image.jpg` وأن مسار الاستدعاء في الكود هو `image/image.jpg`.";
+            } else if (input.includes("خروج") || input.includes("تسجيل")) {
+                solutionText = "💡 <strong>الحل:</strong> يمكنك تسجيل الخروج الآمن في أي وقت بالضغط على زر 'تسجيل الخروج' الأحمر في أسفل هذه الصفحة أو من القائمة الرئيسية.";
+            } else if (input.includes("جدول") || input.includes("مادة") || input.includes("مواد")) {
+                solutionText = "💡 <strong>الحل:</strong> مواد الفصل الثامن الـ 11 موزعة بالكامل في صفحة 'المواد الدراسية' صفحة 'المحاضرات' حسب الجدول الرسمي للكلية.";
+            } else {
+                solutionText = "💡 <strong>الحل العام:</strong> لم نتمكن من مطابقة مشكلتك بدقة، يمكنك مراسلتنا مباشرة عبر الواتساب أو البريد الإلكتروني الموضح أعلاه وسيقوم الدعم بمساعدتك فوراً!";
+            }
+
+            solutionBox.style.display = "block";
+            solutionBox.innerHTML = solutionText;
+        }
+    </script>
+</body>
+</html>

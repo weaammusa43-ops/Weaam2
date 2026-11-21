@@ -1,0 +1,269 @@
+<?php
+require __DIR__ . '/includes/bootstrap.php';
+$user = require_login();
+?>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - جدول المحاضرات والامتحانات | Schedules</title>
+    <!-- ربط ملف التنسيقات الخارجي الموحد داخل مجلد css -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* تنسيق الجداول باحترافية وحواف دائرية وتجاوب مع جميع الشاشات */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            background: #fff;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 14px 16px;
+            text-align: center;
+            border-bottom: 1px solid #e8e3d5;
+            font-size: 14px;
+        }
+
+        .schedule-table th {
+            background-color: #1e382d;
+            color: white;
+            font-weight: 600;
+        }
+
+        .schedule-table tr:hover {
+            background-color: #f4f0e6;
+            transition: background 0.2s ease;
+        }
+
+        /* تنسيق خاص لتصنيف التخصصات والمواد داخل الجدول */
+        .badge-common { background-color: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 4px; }
+        .badge-cs { background-color: #fef3c7; color: #b45309; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 4px; }
+        .badge-stat { background-color: #f0fdf4; color: #15803d; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 4px; }
+        .badge-math { background-color: #fdf2f8; color: #be185d; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 4px; }
+
+        section {
+            border-radius: 16px !important;
+            background: #fff;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* شريط التنقل العلوي المتمركز في المنتصف للأزرار التفاعلية */
+        .portal-nav-bar {
+            background-color: #2c4a3e;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .portal-nav-bar a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .portal-nav-bar a:hover {
+            background-color: #b8860b;
+            border-color: #b8860b;
+            transform: translateY(-2px);
+        }
+        .logout-nav-btn {
+            background: rgba(239, 68, 68, 0.3) !important;
+            border-color: rgba(239, 68, 68, 0.6) !important;
+        }
+        .logout-nav-btn:hover {
+            background: #ef4444 !important;
+            border-color: #ef4444 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+    <header>
+        <h1>Student Portal | بوابة الجداول الأكاديمية</h1>
+        <p>جامعة الجزيرة - كلية العلوم الرياضية والحاسوب (جداول الدفعة 43 - الفصل الدراسي الثامن)</p>
+    </header>
+
+    <!-- شريط الأزرار العلوي التفاعلي (الرئيسية وتسجيل الخروج في المنتصف) -->
+    <div class="portal-nav-bar">
+        <a href="home.php">🏠 الرئيسية | Home</a>
+        <a href="logout.php?t=<?= e(csrf_token()) ?>" class="logout-nav-btn" data-logout>🚪 تسجيل الخروج | Logout</a>
+    </div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main>
+        <?= flash_html() ?>
+        <!-- جدول محاضرات الدفعة 43 المنظم والمصنف -->
+        <section id="lecture-schedule">
+            <h2>📅 جدول محاضرات الدفعة 43 (الفصل الدراسي الثامن)</h2>
+            <p style="color: #666; font-size: 13px; margin-bottom: 15px;">مكتب التسجيل والامتحانات - تنظيم الجداول حسب التخصصات والمقررات المشتركة</p>
+            
+            <div class="table-container">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>اليوم | Day</th>
+                            <th>القاعة | Room</th>
+                            <th>الزمن (08:00 - 10:00)</th>
+                            <th>الزمن (10:00 - 12:00)</th>
+                            <th>الزمن (12:00 - 02:00)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- الأحد -->
+                        <tr>
+                            <td><strong>الأحد</strong></td>
+                            <td>B2-117</td>
+                            <td>تحليل المتغيرات المتعددة<br><small>د. إسراء</small><br><span class="badge-math">رياضيات</span></td>
+                            <td>برمجة تطبيقات الإنترنت<br><small>أ. محمد عبد الرحمن</small><br><span class="badge-common">مقرر مشترك</span></td>
+                            <td>-</td>
+                        </tr>
+
+                        <!-- الثلاثاء -->
+                        <tr>
+                            <td><strong>الثلاثاء</strong></td>
+                            <td>B2-116</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>نظرية الحوسبة<br><small>أ. حسين</small><br><span class="badge-cs">علوم حاسوب</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>الثلاثاء</strong></td>
+                            <td>B2-117</td>
+                            <td>تقانة الوسائط المتعددة<br><small>د. هديل</small><br><span class="badge-common">مقرر مشترك</span></td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>الثلاثاء</strong></td>
+                            <td>B1-103 / B1-104</td>
+                            <td>إدارة وأمن شبكات الحاسوب<br><small>د. سلمى</small><br><span class="badge-cs">علوم حاسوب</span></td>
+                            <td>النماذج الخطية العامة<br><small>أ. سماح</small><br><span class="badge-stat">إحصاء</span></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>الثلاثاء (تابع)</strong></td>
+                            <td>B1-104</td>
+                            <td>المعادلات التفاضلية الجزئية<br><small>د. وحيد</small><br><span class="badge-math">رياضيات</span></td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+
+                        <!-- الأربعاء -->
+                        <tr>
+                            <td><strong>الأربعاء</strong></td>
+                            <td>B1-103</td>
+                            <td>-</td>
+                            <td>إدارة مشروعات البرمجيات<br><small>د. رقية</small><br><span class="badge-common">مقرر مشترك</span></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>الأربعاء (تابع)</strong></td>
+                            <td>B2-117</td>
+                            <td>-</td>
+                            <td>تصميم وتحليل الخوارزميات<br><small>أ. هدى</small><br><span class="badge-cs">علوم حاسوب</span></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>الأربعاء (تابع)</strong></td>
+                            <td>B1-104</td>
+                            <td>-</td>
+                            <td>التحليل الدالي<br><small>د. جمال الخير الأبوي</small><br><span class="badge-math">رياضيات</span></td>
+                            <td>-</td>
+                        </tr>
+
+                        <!-- الخميس -->
+                        <tr>
+                            <td><strong>الخميس</strong></td>
+                            <td>B2-117</td>
+                            <td>إحصاءات بيز<br><small>د. سحر</small><br><span class="badge-stat">إحصاء</span></td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>الخميس (تابع)</strong></td>
+                            <td>B1-103</td>
+                            <td>-</td>
+                            <td>تحليل البيانات التصنيفية<br><small>أ. سمية</small><br><span class="badge-stat">إحصاء</span></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td><strong>الخميس (تابع)</strong></td>
+                            <td>B1-104</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>الأمثلية<br><small>د. نفيسة</small><br><span class="badge-math">رياضيات</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- جدول الامتحانات -->
+        <section id="exam-schedule">
+            <h2>📋 جدول الامتحانات الفصلية</h2>
+            <div class="table-container">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>التاريخ | Date</th>
+                            <th>الزمن | Time</th>
+                            <th>المادة | Subject</th>
+                            <th>القاعة | Hall</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>يُحدد لاحقاً</td>
+                            <td>09:00 AM</td>
+                            <td>إدارة وأمن شبكات الحاسوب</td>
+                            <td>Hall A</td>
+                        </tr>
+                        <tr>
+                            <td>يُحدد لاحقاً</td>
+                            <td>09:00 AM</td>
+                            <td>تصميم وتحليل الخوارزميات</td>
+                            <td>Hall B</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <p>Student Portal & بوابة الطالب - جامعة الجزيرة © 2026</p>
+    </footer>
+
+    <!-- ربط ملف الجافاسكريبت الخارجي -->
+    <script src="js/script.js"></script>
+</body>
+</html>
